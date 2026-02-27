@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio CSS - WebComponents</title>
+    <style>
+        /* ESTILOS DE LA PÁGINA PRINCIPAL */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .documentacion {
+            border-bottom: 2px solid #eee;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; border-left: 5px solid #3498db; padding-left: 10px; }
+        
+        .badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        /* Espacio para el WebComponent */
+        componente-registro {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <section class="documentacion">
+            <h1>Propuesta de Solución Web</h1>
+            <h2>Enunciado del Problema</h2>
+            <p>
+                En el <strong>Sector de Salud y Bienestar</strong>, las clínicas pequeñas y gimnasios locales suelen perder el rastro de la evolución de sus clientes debido a que el registro de medidas corporales se hace en papel o archivos dispersos. Esto impide que el usuario vea su progreso en tiempo real (Índice de Masa Corporal - IMC), lo que disminuye su motivación y adherencia al programa de salud.
+            </p>
+            <p><strong>Sectores enfocados:</strong> Salud, Fitness y Nutrición.</p>
+            <span class="badge">Solución: Registro de Antropometría Digital</span>
+        </section>
+
+        <section>
+            <h2>Herramienta de Registro</h2>
+            <p>Complete el siguiente formulario para calcular su estado de salud actual sin recargar la página.</p>
+            
+            <componente-registro></componente-registro>
+        </section>
+    </div>
+
+    <script>
+        class RegistroSalud extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+            }
+
+            connectedCallback() {
+                this.render();
+            }
+
+            render() {
+                this.shadowRoot.innerHTML = `
+                <style>
+                    :host {
+                        display: block;
+                        background: #f9f9f9;
+                        padding: 20px;
+                        border-radius: 10px;
+                        border: 1px solid #ddd;
+                    }
+                    form {
+                        display: grid;
+                        gap: 15px;
+                    }
+                    .control {
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    label {
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                        font-size: 0.9em;
+                    }
+                    input, select, button {
+                        padding: 10px;
+                        border-radius: 5px;
+                        border: 1px solid #ccc;
+                        font-size: 1em;
+                    }
+                    input:focus, select:focus {
+                        outline: none;
+                        border-color: #3498db;
+                        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+                    }
+                    button {
+                        background-color: #27ae60;
+                        color: white;
+                        border: none;
+                        cursor: pointer;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        margin-top: 10px;
+                    }
+                    button:hover {
+                        background-color: #219150;
+                    }
+                    #resultado {
+                        margin-top: 20px;
+                        padding: 15px;
+                        border-radius: 5px;
+                        text-align: center;
+                        font-weight: bold;
+                        display: none; /* Oculto inicialmente */
+                    }
+                    .error-text {
+                        color: #e74c3c;
+                        font-size: 0.8em;
+                        display: none;
+                    }
+                </style>
+
+                <form id="formSalud">
+                    <div class="control">
+                        <label for="nombre">Nombre Completo:</label>
+                        <input type="text" id="nombre" placeholder="Ej: Juan Pérez">
+                        <span id="err-nombre" class="error-text">Este campo es obligatorio.</span>
+                    </div>
+
+                    <div class="control">
+                        <label for="peso">Peso actual (kg):</label>
+                        <input type="number" id="peso" step="0.1" placeholder="Ej: 75.5">
+                        <span id="err-peso" class="error-text">Ingrese un peso válido mayor a 0.</span>
+                    </div>
+
+                    <div class="control">
+                        <label for="altura">Estatura (metros):</label>
+                        <input type="number" id="altura" step="0.01" placeholder="Ej: 1.75">
+                        <span id="err-altura" class="error-text">Ingrese una altura válida (ej: 1.75).</span>
+                    </div>
+
+                    <div class="control">
+                        <label for="actividad">Nivel de Actividad:</label>
+                        <select id="actividad">
+                            <option value="">-- Seleccione --</option>
+                            <option value="sedentario">Sedentario</option>
+                            <option value="moderado">Moderado</option>
+                            <option value="atleta">Atleta</option>
+                        </select>
+                        <span id="err-actividad" class="error-text">Seleccione una opción.</span>
+                    </div>
+
+                    <button type="button" id="btnProcesar">Calcular Resultado</button>
+                </form>
+
+                <div id="resultado"></div>
+                `;
+
+                this.setupEvents();
+            }
+
+            setupEvents() {
+                const btn = this.shadowRoot.querySelector('#btnProcesar');
+                btn.addEventListener('click', () => this.validarYCalcular());
+            }
+
+            validarYCalcular() {
+                // Referencias a los campos
+                const nombre = this.shadowRoot.querySelector('#nombre');
+                const peso = this.shadowRoot.querySelector('#peso');
+                const altura = this.shadowRoot.querySelector('#altura');
+                const actividad = this.shadowRoot.querySelector('#actividad');
+                const resDiv = this.shadowRoot.querySelector('#resultado');
+
+                let esValido = true;
+
+                // PUNTO 5: VALIDACIÓN LÓGICA
+                if (nombre.value.trim() === "") {
+                    this.showError('err-nombre', true);
+                    esValido = false;
+                } else { this.showError('err-nombre', false); }
+
+                if (peso.value <= 0 || peso.value === "") {
+                    this.showError('err-peso', true);
+                    esValido = false;
+                } else { this.showError('err-peso', false); }
+
+                if (altura.value <= 0 || altura.value === "") {
+                    this.showError('err-altura', true);
+                    esValido = false;
+                } else { this.showError('err-altura', false); }
+
+                if (actividad.value === "") {
+                    this.showError('err-actividad', true);
+                    esValido = false;
+                } else { this.showError('err-actividad', false); }
+
+                // PUNTO 4: MANIPULACIÓN Y MOSTRAR RESULTADO SIN RECARGAR
+                if (esValido) {
+                    const imc = (peso.value / (altura.value * altura.value)).toFixed(2);
+                    let categoria = "";
+
+                    if (imc < 18.5) categoria = "Bajo peso";
+                    else if (imc < 25) categoria = "Peso saludable";
+                    else categoria = "Sobrepeso";
+
+                    resDiv.style.display = "block";
+                    resDiv.style.backgroundColor = "#d4edda";
+                    resDiv.style.color = "#155724";
+                    resDiv.style.border = "1px solid #c3e6cb";
+                    resDiv.innerHTML = `Hola ${nombre.value}, tu IMC es <strong>${imc}</strong> (${categoria}). <br> Nivel: ${actividad.value.toUpperCase()}`;
+                } else {
+                    resDiv.style.display = "none";
+                }
+            }
+
+            showError(id, mostrar) {
+                this.shadowRoot.getElementById(id).style.display = mostrar ? "block" : "none";
+            }
+        }
+
+        // Registrar el componente
+        customElements.define('componente-registro', RegistroSalud);
+    </script>
+</body>
+</html>
