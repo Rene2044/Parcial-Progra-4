@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Integrantes:
 Rene Oswaldo Orellana de la O SMSS038422
 Allisson Lourdes Guevara Palma SMIS038421
@@ -31,3 +32,10 @@ Atributos Dinámicos (Observables): Usar observedAttributes para que el componen
 Comunicación por Eventos: Implementar Custom Events para que, cuando un usuario registre su IMC, se dispare una señal que otros componentes (como una gráfica de historial) puedan captar.
 
 Persistencia de Datos: Conectar el componente con el localStorage del navegador o una API externa para guardar los registros y que no se borren al cerrar la pestaña.
+=======
+# Parcial-Progra-4
+Primer Parcial
+
+
+https://rene2044.github.io/Parcial-Progra-4/
+>>>>>>> b9d3064a8c887e985363d2670f0fd09447c9757e
